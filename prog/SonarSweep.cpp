@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     }
 
     std::cout << "Part 1: " << answer1(depths) << std::endl;
+    std::cout << "Part 2: " << answer2(depths) << std::endl;
 
     return 0;
 }

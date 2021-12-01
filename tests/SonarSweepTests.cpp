@@ -7,3 +7,8 @@ BOOST_AUTO_TEST_CASE(depth_increases) {
     const std::vector<int> test_input = {199, 200, 208, 210, 200, 207, 240, 269, 260, 263};
     BOOST_CHECK(answer1(test_input) == 7);
 }
+
+BOOST_AUTO_TEST_CASE(depth_increases_with_window) {
+    const std::vector<int> test_input = {199, 200, 208, 210, 200, 207, 240, 269, 260, 263};
+    BOOST_CHECK(answer2(test_input) == 5);
+}

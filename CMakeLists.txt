@@ -12,3 +12,8 @@ add_subdirectory(prog)
 add_subdirectory(tests)
 
 enable_testing()
+
+add_test(
+  NAME SonarSweep
+  COMMAND SonarSweepTests
+  )
