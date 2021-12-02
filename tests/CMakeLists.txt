@@ -15,3 +15,14 @@ target_link_libraries(
   ${Boost_SYSTEM_LIBRARY}
   ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
   )
+
+add_executable(
+  DiveTests DiveTests.cpp
+  )
+
+target_link_libraries(
+  DiveTests
+  ${Boost_FILESYSTEM_LIBRARY}
+  ${Boost_SYSTEM_LIBRARY}
+  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+  )

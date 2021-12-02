@@ -17,3 +17,8 @@ add_test(
   NAME SonarSweep
   COMMAND SonarSweepTests
   )
+
+add_test(
+  NAME Dive
+  COMMAND DiveTests
+  )
