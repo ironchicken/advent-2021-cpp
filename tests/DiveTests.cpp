@@ -47,3 +47,23 @@ BOOST_AUTO_TEST_CASE(course_destination) {
 
     BOOST_CHECK(followCourse(start, course) == expected);
 }
+
+BOOST_AUTO_TEST_CASE(course_destination_with_aim_rules) {
+    std::vector<Command> course =
+    {
+	{Direction::Forward, 5},
+	{Direction::Down, 5},
+	{Direction::Forward, 8},
+	{Direction::Up, 3},
+	{Direction::Down, 8},
+	{Direction::Forward, 2},
+    };
+
+    const int expectedH = 15;
+    const int expectedD = 60;
+    const Aim start = Aim{0, 0, 0};
+
+    auto destination = followAimCourse(start, course);
+
+    BOOST_CHECK(destination.horizontal == expectedH && destination.depth == expectedD);
+}
