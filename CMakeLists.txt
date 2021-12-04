@@ -22,3 +22,8 @@ add_test(
   NAME Dive
   COMMAND DiveTests
   )
+
+add_test(
+  NAME BinaryDiagnostics
+  COMMAND BinaryDiagnosticsTests
+  )
