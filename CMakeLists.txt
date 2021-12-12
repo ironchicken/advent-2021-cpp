@@ -27,3 +27,8 @@ add_test(
   NAME BinaryDiagnostics
   COMMAND BinaryDiagnosticsTests
   )
+
+add_test(
+  NAME PassagePathing
+  COMMAND PassagePathingTests
+  )

@@ -12,3 +12,8 @@ add_executable(
   BinaryDiagnostics
   BinaryDiagnostics.cpp
   )
+
+add_executable(
+  PassagePathing
+  PassagePathing.cpp
+  )
