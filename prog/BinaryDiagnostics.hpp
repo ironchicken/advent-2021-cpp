@@ -17,24 +17,33 @@ std::vector<std::string> tokenize(std::istream &in) {
     return tokens;
 }
 
-template<class Func>
+std::pair<int, int> countBits(const std::vector<std::string> &numbers, int position) {
+    int zeroCount { 0 };
+    int oneCount { 0 };
+
+    for (auto number : numbers) {
+	auto bit = number[position];
+	if (bit == '0') {
+	    zeroCount += 1;
+        } else if (bit == '1') {
+	    oneCount += 1;
+        }
+    }
+
+    return std::make_pair(zeroCount, oneCount);
+}
+
+template <class Func>
 long rate(const std::vector<std::string> &report, Func compare) {
     std::vector<int> zeroCounts(MAX_NUMBER_WIDTH, 0);
     std::vector<int> oneCounts(MAX_NUMBER_WIDTH, 0);
-    int bitPosition { 0 };
-    int numberWidth { 0 };
 
-    for (auto number : report) {
-	for (auto bit : number) {
-	    if (bit == '0') {
-		zeroCounts[bitPosition] += 1;
-	    } else if (bit == '1') {
-		oneCounts[bitPosition] += 1;
-	    }
-	    bitPosition++;
-        }
-	numberWidth = bitPosition;
-        bitPosition = 0;
+    int numberWidth = report.front().length();
+
+    for (int i = 0; i < numberWidth; i++) {
+	auto counts = countBits(report, i);
+	zeroCounts[i] += counts.first;
+	oneCounts[i] += counts.second;
     }
 
     std::string rate;
@@ -60,9 +69,48 @@ long epsilonRate(const std::vector<std::string> &report) {
     return rate(report, std::less<>());
 }
 
-long oxygenGeneratorRate(const std::vector<std::string> &report) { return 0; }
+template <class Func>
+long lifeSupportRate(const std::vector<std::string> &report, Func compare, char equalBit) {
+    int position { 0 };
+    std::vector<std::string> input = report;
+    std::vector<std::string> filtered;
 
-long co2ScrubberRate(const std::vector<std::string> &report) { return 0; }
+    while (input.size() > 1) {
+	auto counts = countBits(input, position);
+	if (compare(counts.first, counts.second)) {
+          std::copy_if(input.begin(), input.end(),
+                       std::back_inserter(filtered),
+                       [position](std::string number) {
+                         return number[position] == '0';
+                       });
+        } else if (compare(counts.second, counts.first)) {
+          std::copy_if(input.begin(), input.end(),
+                       std::back_inserter(filtered),
+                       [position](std::string number) {
+                         return number[position] == '1';
+                       });
+        } else if (counts.second == counts.first) {
+          std::copy_if(input.begin(), input.end(),
+                       std::back_inserter(filtered),
+                       [position, equalBit](std::string number) {
+                         return number[position] == equalBit;
+                       });
+        }
+	input = filtered;
+	filtered.clear();
+	position++;
+    }
+
+    return std::stol(input.front(), nullptr, 2);
+}
+
+long oxygenGeneratorRate(const std::vector<std::string> &report) {
+    return lifeSupportRate(report, std::greater<>(), '1');
+}
+
+long co2ScrubberRate(const std::vector<std::string> &report) {
+    return lifeSupportRate(report, std::less<>(), '0');
+}
 
 long answer1(std::istream &in) {
     auto tokens = tokenize(in);
@@ -70,4 +118,12 @@ long answer1(std::istream &in) {
     auto epsilon = epsilonRate(tokens);
 
     return gamma * epsilon;
+}
+
+long answer2(std::istream &in) {
+    auto tokens = tokenize(in);
+    auto oxygen = oxygenGeneratorRate(tokens);
+    auto co2 = co2ScrubberRate(tokens);
+
+    return oxygen * co2;
 }
