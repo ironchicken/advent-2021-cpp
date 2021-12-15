@@ -14,6 +14,11 @@ add_executable(
   )
 
 add_executable(
+  GiantSquid
+  GiantSquid.cpp
+  )
+
+add_executable(
   PassagePathing
   PassagePathing.cpp
   )

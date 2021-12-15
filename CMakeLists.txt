@@ -29,6 +29,11 @@ add_test(
   )
 
 add_test(
+  NAME GiantSquid
+  COMMAND GiantSquidTests
+  )
+
+add_test(
   NAME PassagePathing
   COMMAND PassagePathingTests
   )
