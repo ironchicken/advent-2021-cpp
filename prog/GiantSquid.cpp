@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     std::ifstream input(input_file);
     std::istream& is = input;
 
-    //std::cout << "Part 1: " << answer1(is) << std::endl;
+    std::cout << "Part 1: " << answer1(is) << std::endl;
 
     return 0;
 }
