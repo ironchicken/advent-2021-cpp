@@ -34,6 +34,11 @@ add_test(
   )
 
 add_test(
+  NAME HydrothermalVenture
+  COMMAND HydrothermalVentureTests
+  )
+
+add_test(
   NAME PassagePathing
   COMMAND PassagePathingTests
   )

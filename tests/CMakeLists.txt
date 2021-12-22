@@ -50,6 +50,17 @@ target_link_libraries(
   )
 
 add_executable(
+  HydrothermalVentureTests HydrothermalVentureTests.cpp
+  )
+
+target_link_libraries(
+  HydrothermalVentureTests
+  ${Boost_FILESYSTEM_LIBRARY}
+  ${Boost_SYSTEM_LIBRARY}
+  ${Boost_UNIT_TEST_FRAMEWORK_LIBRARY}
+  )
+
+add_executable(
   PassagePathingTests PassagePathingTests.cpp
   )
 

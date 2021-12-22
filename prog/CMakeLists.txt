@@ -19,6 +19,11 @@ add_executable(
   )
 
 add_executable(
+  HydrothermalVenture
+  HydrothermalVenture.cpp
+  )
+
+add_executable(
   PassagePathing
   PassagePathing.cpp
   )
