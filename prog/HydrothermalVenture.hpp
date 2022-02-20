@@ -26,32 +26,32 @@ std::vector<LineSegment> parseLineSegments(std::istream& in, int& width, int& he
 
     std::string line;
     while (std::getline(in, line)) {
-	int sPos = 0;
-	int ePos = line.find(',');
-	auto x1 = std::stoi(line.substr(sPos, ePos));
+        int sPos = 0;
+        int ePos = line.find(',');
+        auto x1 = std::stoi(line.substr(sPos, ePos));
         if (x1 > width) {
-	    width = x1;
+            width = x1;
         }
 
         sPos = ePos + 1;
         ePos = line.find(' ', sPos);
         auto y1 = std::stoi(line.substr(sPos, ePos));
         if (y1 > height) {
-	    height = y1;
-	}
-
-        sPos = ePos + 4;
-	ePos = line.find(',', sPos);
-	auto x2 = std::stoi(line.substr(sPos, ePos));
-        if (x2 > width) {
-	    width = x2;
+            height = y1;
         }
 
-	sPos = ePos + 1;
-	auto y2 = std::stoi(line.substr(sPos));
+        sPos = ePos + 4;
+        ePos = line.find(',', sPos);
+        auto x2 = std::stoi(line.substr(sPos, ePos));
+        if (x2 > width) {
+            width = x2;
+        }
+
+        sPos = ePos + 1;
+        auto y2 = std::stoi(line.substr(sPos));
         if (y2 > height) {
-	    height = y2;
-	}
+            height = y2;
+        }
 
         lineSegments.emplace_back(LineSegment{Point{x1, y1}, Point{x2, y2}});
     }
@@ -68,27 +68,57 @@ bool isBackwards(const LineSegment &line) { return line.from.x > line.to.x; }
 bool isUpwards(const LineSegment &line) { return line.from.y > line.to.y; }
 bool isDownwards(const LineSegment &line) { return line.from.y < line.to.y; }
 
-std::vector<Point> findPoints(const LineSegment &line) {
+std::vector<Point> findPoints(const LineSegment &line, bool diagonals) {
     std::vector<Point> points;
 
     if (isHorizontal(line)) {
-	if (isForwards(line)) {
-	    for (int x { line.from.x }; x <= line.to.x; x++ ) {
-		points.emplace_back(Point{ x, line.from.y });
+        if (isForwards(line)) {
+            for (int x { line.from.x }; x <= line.to.x; x++ ) {
+                points.emplace_back(Point{ x, line.from.y });
             }
         } else if (isBackwards(line)) {
-	    for (int x { line.from.x }; x >= line.to.x; x-- ) {
-		points.emplace_back(Point{ x, line.from.y });
+            for (int x { line.from.x }; x >= line.to.x; x-- ) {
+                points.emplace_back(Point{ x, line.from.y });
             }
         }
     } else if (isVertical(line)) {
-	if (isUpwards(line)) {
-	    for (int y { line.from.y }; y >= line.to.y; y-- ) {
-		points.emplace_back(Point{ line.from.x, y });
+        if (isUpwards(line)) {
+            for (int y { line.from.y }; y >= line.to.y; y-- ) {
+                points.emplace_back(Point{ line.from.x, y });
             }
         } else if (isDownwards(line)) {
-	    for (int y { line.from.y }; y <= line.to.y; y++ ) {
-		points.emplace_back(Point{ line.from.x, y });
+            for (int y { line.from.y }; y <= line.to.y; y++ ) {
+                points.emplace_back(Point{ line.from.x, y });
+            }
+        }
+    }
+
+    if (diagonals) {
+        int x{line.from.x};
+        int y{line.from.y};
+        if (isForwards(line) && isUpwards(line)) {
+            while (x <= line.to.x && y >= line.to.y) {
+                points.emplace_back(Point{x, y});
+                x++;
+                y--;
+            }
+        } else if (isForwards(line) && isDownwards(line)) {
+            while (x <= line.to.x && y <= line.to.y) {
+                points.emplace_back(Point{x, y});
+                x++;
+                y++;
+            }
+        } else if (isBackwards(line) && isUpwards(line)) {
+            while (x >= line.to.x && y >= line.to.y) {
+                points.emplace_back(Point{x, y});
+                x--;
+                y--;
+            }
+        } else if (isBackwards(line) && isDownwards(line)) {
+            while (x >= line.to.x && y <= line.to.y) {
+                points.emplace_back(Point{x, y});
+                x--;
+                y++;
             }
         }
     }
@@ -96,13 +126,13 @@ std::vector<Point> findPoints(const LineSegment &line) {
     return points;
 }
 
-void addLinesToMap(const std::vector<LineSegment>& lines, Map& map, int width, int height) {
+void addLinesToMap(const std::vector<LineSegment>& lines, Map& map, int width, int height, bool diagonals) {
     for (int y { 0 }; y <= height; y++) {
 	map.push_back(std::vector(width + 1, 0));
     }
 
     for (auto line : lines) {
-	auto points = findPoints(line);
+	auto points = findPoints(line, diagonals);
         for (auto p : points) {
             map[p.y][p.x]++;
         }
@@ -113,10 +143,10 @@ int countOverlaps(const Map& map) {
     int count { 0 };
 
     for (auto row : map) {
-	for (auto col : row) {
-	    if (col > 1) {
-		count++;
-	    }
+        for (auto col : row) {
+            if (col > 1) {
+                count++;
+            }
         }
     }
 
@@ -130,7 +160,20 @@ int answer1(std::istream& in) {
 
     auto lines = parseLineSegments(in, width, height);
 
-    addLinesToMap(lines, map, width, height);
+    addLinesToMap(lines, map, width, height, false);
+
+    return countOverlaps(map);
+}
+
+
+int answer2(std::istream& in) {
+    int width { 0 };
+    int height { 0 };
+    Map map;
+
+    auto lines = parseLineSegments(in, width, height);
+
+    addLinesToMap(lines, map, width, height, true);
 
     return countOverlaps(map);
 }
