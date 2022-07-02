@@ -24,6 +24,11 @@ add_executable(
   )
 
 add_executable(
+  Lanternfish
+  Lanternfish.cpp
+  )
+
+add_executable(
   PassagePathing
   PassagePathing.cpp
   )

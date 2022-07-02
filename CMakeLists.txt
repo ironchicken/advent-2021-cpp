@@ -39,6 +39,11 @@ add_test(
   )
 
 add_test(
+  NAME Lanternfish
+  COMMAND LanternfishTests
+  )
+
+add_test(
   NAME PassagePathing
   COMMAND PassagePathingTests
   )
