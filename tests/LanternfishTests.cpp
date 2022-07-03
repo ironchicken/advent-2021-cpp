@@ -6,45 +6,55 @@
 
 #include <istream>
 #include <sstream>
-#include <vector>
 #include <string>
+
+bool isEqual(long (&a)[MAX_TIMER + 1], long (&b)[MAX_TIMER + 1]) {
+    for (auto x = 0; x < MAX_TIMER + 1; x++) {
+        if (a[x] != b[x]) {
+            return false;
+        }
+    }
+    return true;
+}
 
 BOOST_AUTO_TEST_CASE(parse_input) {
     const std::string input = "3,4,3,1,2";
     std::istringstream is{input};
     std::istream &i = is ;
-    std::vector<int> expected{3,4,3,1,2};
+    long fish[MAX_TIMER + 1];
+    initFishMap(fish);
+    long expected[MAX_TIMER + 1]{0,1,1,2,1,0,0,0,0};
 
-    auto fish = parseFish(i);
+    parseFish(fish, i);
 
-    BOOST_CHECK(fish == expected);
+    BOOST_CHECK(isEqual(fish, expected));
 }
 
 BOOST_AUTO_TEST_CASE(iterate_generation_no_spawn) {
-    std::vector<int> fish{3,4,3,1,2};
-    std::vector<int> expected{2,3,2,0,1};
+    long fish[MAX_TIMER + 1]{0,1,1,2,1,0,0,0};
+    long expected[MAX_TIMER + 1]{1,1,2,1,0,0,0,0,0};
 
     iterateGeneration(fish);
 
-    BOOST_CHECK(fish == expected);
+    BOOST_CHECK(isEqual(fish, expected));
 }
 
 BOOST_AUTO_TEST_CASE(iterate_generation_spawn_one) {
-    std::vector<int> fish{2,3,2,0,1};
-    std::vector<int> expected{1,2,1,6,0,8};
+    long fish[MAX_TIMER + 1]{1,1,2,1,0,0,0,0};
+    long expected[MAX_TIMER + 1]{1,2,1,0,0,0,1,0,1};
 
     iterateGeneration(fish);
 
-    BOOST_CHECK(fish == expected);
+    BOOST_CHECK(isEqual(fish, expected));
 }
 
 BOOST_AUTO_TEST_CASE(simulate_growth) {
-    std::vector<int> fish{3,4,3,1,2};
-    std::vector<int> expected{6,0,6,4,5,6,0,1,1,2,6,0,1,1,1,2,2,3,3,4,6,7,8,8,8,8};
+    long fish[MAX_TIMER + 1]{0,1,1,2,1,0,0,0,0};
+    long expected[MAX_TIMER + 1]{3,5,3,2,2,1,5,1,4};
 
     simulateGrowth(fish, 18);
 
-    BOOST_CHECK(fish == expected);
+    BOOST_CHECK(isEqual(fish, expected));
 }
 
 BOOST_AUTO_TEST_CASE(answer_1) {
@@ -53,7 +63,16 @@ BOOST_AUTO_TEST_CASE(answer_1) {
     std::istream &i = is ;
 
     auto answer = answer1(i);
-    std::cout << answer << std::endl;
 
     BOOST_CHECK(answer == 5934);
+}
+
+BOOST_AUTO_TEST_CASE(answer_2) {
+    const std::string input = "3,4,3,1,2";
+    std::istringstream is{input};
+    std::istream &i = is ;
+
+    auto answer = answer2(i);
+
+    BOOST_CHECK(answer == 26984457539);
 }
